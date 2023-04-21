@@ -171,9 +171,21 @@ columns_used <- append(columns_used, "mSZoning")
 clean_data <- subset(data, select = columns_used)
 ```
 
-Columnas a utilizar (basándonos en el análisis exploratorio de la hoja anterior):
+
+## 2 - Explore los datos y explique las transformaciones que debe hacerle para generar un modelo de máquinas vectoriales de soporte.
+
 ```{r}
-print(paste(columns_used,collapse=' '))
+modelSvm <- svm(salePrice~., data = train_set, scale = F)
+modelSvm$index
+plot(modelSvm, train_set, salePrice~.)
+```
+
+
+
+## 3 - Use como variable respuesta la variable categórica que especifica si la casa es barata, media o cara
+
+```{r}
+clean_data$economy <- ifelse(clean_data$salePrice < 163000, "Economic", ifelse(clean_data$salePrice >= 163000 & clean_data$salePrice <= 214000, "Average", "Expensive"))
 ```
 
 ``` {r}
@@ -184,58 +196,87 @@ train_set <- clean_data[partition,]
 test_set <- clean_data[-partition,]
 ```
 
-## 2 - Explore los datos y explique las transformaciones que debe hacerle para generar un modelo de máquinas vectoriales de soporte.
-
-```{r}
-modelSvm <- svm(salePrice~., data = train_set, scale = F)
-summary(modelSvm)
-modelSvm$index
-plot(modelSvm, train_set, salePrice~.)
-```
-
-## 3 - Use como variable respuesta la variable categórica que especifica si la casa es barata, media o cara
-
-```{r}
-clean_data$economy <- ifelse(clean_data$salePrice < 163000, "Economic", ifelse(clean_data$salePrice >= 163000 & clean_data$salePrice <= 214000, "Average", "Expensive"))
-```
-
-```{r}
-clean_data <- dummy_cols(clean_data, select_columns = "economy", remove_selected_columns = TRUE)
-head(clean_data)
-```
-
 ## 4 - Genere varios (más de 2) modelos de SVM con diferentes kernels y distintos valores en los parámetros c, gamma (circular) y d (en caso de que utilice el polinomial). Puede tunear el modelo de forma automática siempre que explique los resultados.
 
 ### --> Preparar los modelos con diferentes kernels
-``` {r}
-modelSVM_L<-svm(salePrice~., data=train_set, cost=2^5, kernel="linear") #98%
-modelSVM_L<-svm(salePrice~., data=train_set, cost=2^-5, kernel="linear") #88%
-modelSVM_L<-svm(salePrice~., data=train_set, cost=0.5, kernel="linear")#95%
-modelSVM_R<-svm(salePrice~., data=train_set, gamma=2^-5, kernel="radial")
-modelSVM_R<-svm(salePrice~., data=train_set, gamma=2^1, kernel="radial")
+``` {r, warning=FALSE}
+train_set <- na.omit(train_set)
+test_set <- na.omit(test_set)
+
+train_set$economy <- as.factor(train_set$economy)
+test_set$economy <- as.factor(test_set$economy)
+
+modelSVM_L01<-svm(economy~., data=train_set, cost=2^5, kernel="linear")
+modelSVM_L02<-svm(economy~., data=train_set, cost=2^-5, kernel="linear")
+modelSVM_L03<-svm(economy~., data=train_set, cost=0.5, kernel="linear")
+modelSVM_R01<-svm(economy~., data=train_set, gamma=2^-5, kernel="radial")
+modelSVM_R02<-svm(economy~., data=train_set, gamma=2^1, kernel="radial")
+
+# Tuneando modelos para obtener diferentes resultados
+modelTunedL <- tune.svm(economy~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="linear")
+modelTunedP <- tune.svm(economy~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="polynomial", degree = c(2,3))
 ```
 
-### --> Predicciones
-
-``` {r}
-predictionL<-predict(modelSVM_L, newdata=train_set[,-21])
-predictionR<-predict(modelSVM_R, newdata=train_set[,-21])
-```
-
-
-### --> Tunear modelo y obtener una mejor prediccion
-``` {r}
-modelTuned <- tune.svm(salePrice~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="linear")
-predBestModelo <- predict(modelTuned$best.model,newdata = test_set[,-24])
-```
 
 ## 5 - Use los modelos para predecir el valor de la variable respuesta
+``` {r}
 
-## 6 - 
+predictionL01<-predict(modelSVM_L01, newdata=test_set)
+predictionL02<-predict(modelSVM_L02, newdata=test_set)
+predictionL03<-predict(modelSVM_L03, newdata=test_set)
+predictionR01<-predict(modelSVM_R01, newdata=test_set)
+predictionR02<-predict(modelSVM_R02, newdata=test_set)
+predictionTuned01 <- predict(modelTunedL$best.model, newdata=test_set)
+predictionTuned02 <- predict(modelTunedP$best.model, newdata=test_set)
+```
+## 6 - Haga las matrices de confusión respectivas
 
-## 7 - 
+Modelo modelSVM_L01
+``` {r}
+confusionMatrix(test_set$economy, predictionL01)
+```
 
-## 8 - 
+Modelo modelSVM_L02
+``` {r}
+confusionMatrix(test_set$economy, predictionL02)
+```
+
+Modelo modelSVM_L03
+``` {r}
+confusionMatrix(test_set$economy, predictionL03)
+```
+
+
+Modelo modelSVM_R01
+``` {r}
+confusionMatrix(test_set$economy, predictionR01)
+```
+
+
+Modelo modelSVM_R02
+``` {r}
+confusionMatrix(test_set$economy, predictionR02)
+```
+
+Modelo modelTunedL
+``` {r}
+confusionMatrix(test_set$economy, predictionTuned01)
+```
+
+
+Modelo modelTunedP
+``` {r}
+confusionMatrix(test_set$economy, predictionTuned02)
+```
+
+## 7 - Analice si los modelos están sobreajustados o desajustados. ¿Qué puede hacer para manejar el sobreajuste o desajuste?
+
+Los modelos radiales parecen estar desajustados dado que su accuracy es 0.4843.
+Todos los modelos adicionales tienen un accuracy de 0.9943, es posible que estén sobreajustados por lo que vamos a visualizar las gráficas de aprendizaje y de test.
+
+## 8 - Compare los resultados obtenidos con los diferentes modelos que hizo en cuanto a
+efectividad, tiempo de procesamiento y equivocaciones (donde el algoritmo se equivocó
+más, donde se equivocó menos y la importancia que tienen los errores)
 
 ## 9 - 
 
