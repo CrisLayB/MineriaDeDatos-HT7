@@ -14,6 +14,9 @@ library(rsample)     # data splitting
 library(rpart.plot)  # plotting regression trees
 library(ipred)       # bagging
 library(caret)       # bagging
+library(e1071)
+library(dummy)
+library(fastDummies)
 ```
 
 ## 1 - Use los mismos conjuntos de entrenamiento y prueba de las hojas de trabajo pasadas para probar el algoritmo.
@@ -184,14 +187,49 @@ test_set <- clean_data[-partition,]
 ## 2 - Explore los datos y explique las transformaciones que debe hacerle para generar un modelo de máquinas vectoriales de soporte.
 
 ```{r}
-
+modelSvm <- svm(salePrice~., data = train_set, scale = F)
+summary(modelSvm)
+modelSvm$index
+plot(modelSvm, train_set, salePrice~.)
 ```
 
-## 3 - 
+## 3 - Use como variable respuesta la variable categórica que especifica si la casa es barata, media o cara
 
-## 4 - 
+```{r}
+clean_data$economy <- ifelse(clean_data$salePrice < 163000, "Economic", ifelse(clean_data$salePrice >= 163000 & clean_data$salePrice <= 214000, "Average", "Expensive"))
+```
 
-## 5 -
+```{r}
+clean_data <- dummy_cols(clean_data, select_columns = "economy", remove_selected_columns = TRUE)
+head(clean_data)
+```
+
+## 4 - Genere varios (más de 2) modelos de SVM con diferentes kernels y distintos valores en los parámetros c, gamma (circular) y d (en caso de que utilice el polinomial). Puede tunear el modelo de forma automática siempre que explique los resultados.
+
+### --> Preparar los modelos con diferentes kernels
+``` {r}
+modelSVM_L<-svm(salePrice~., data=train_set, cost=2^5, kernel="linear") #98%
+modelSVM_L<-svm(salePrice~., data=train_set, cost=2^-5, kernel="linear") #88%
+modelSVM_L<-svm(salePrice~., data=train_set, cost=0.5, kernel="linear")#95%
+modelSVM_R<-svm(salePrice~., data=train_set, gamma=2^-5, kernel="radial")
+modelSVM_R<-svm(salePrice~., data=train_set, gamma=2^1, kernel="radial")
+```
+
+### --> Predicciones
+
+``` {r}
+predictionL<-predict(modelSVM_L, newdata=train_set[,-21])
+predictionR<-predict(modelSVM_R, newdata=train_set[,-21])
+```
+
+
+### --> Tunear modelo y obtener una mejor prediccion
+``` {r}
+modelTuned <- tune.svm(salePrice~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="linear")
+predBestModelo <- predict(modelTuned$best.model,newdata = test_set[,-24])
+```
+
+## 5 - Use los modelos para predecir el valor de la variable respuesta
 
 ## 6 - 
 
