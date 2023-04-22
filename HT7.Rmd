@@ -206,11 +206,11 @@ test_set <- na.omit(test_set)
 train_set$economy <- as.factor(train_set$economy)
 test_set$economy <- as.factor(test_set$economy)
 
-modelSVM_L01<-svm(economy~., data=train_set, cost=2^5, kernel="linear")
-modelSVM_L02<-svm(economy~., data=train_set, cost=2^-5, kernel="linear")
+modelSVM_L01<-svm(economy~., data=train_set, cost=2^10, kernel="linear")
+modelSVM_L02<-svm(economy~., data=train_set, cost=2^-10, kernel="linear")
 modelSVM_L03<-svm(economy~., data=train_set, cost=0.5, kernel="linear")
-modelSVM_R01<-svm(economy~., data=train_set, gamma=2^-5, kernel="radial")
-modelSVM_R02<-svm(economy~., data=train_set, gamma=2^1, kernel="radial")
+modelSVM_R01<-svm(economy~., data=train_set, gamma=2^-10, kernel="radial")
+modelSVM_R02<-svm(economy~., data=train_set, gamma=2, kernel="radial")
 
 # Tuneando modelos para obtener diferentes resultados
 modelTunedL <- tune.svm(economy~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="linear")
@@ -274,9 +274,15 @@ confusionMatrix(test_set$economy, predictionTuned02)
 Los modelos radiales parecen estar desajustados dado que su accuracy es 0.4843.
 Todos los modelos adicionales tienen un accuracy de 0.9943, es posible que estén sobreajustados por lo que vamos a visualizar las gráficas de aprendizaje y de test.
 
+
+
 ## 8 - Compare los resultados obtenidos con los diferentes modelos que hizo en cuanto a
 efectividad, tiempo de procesamiento y equivocaciones (donde el algoritmo se equivocó
 más, donde se equivocó menos y la importancia que tienen los errores)
+
+En cuanto a tiempo, todos los modelos sin tunear fueron procesados relativamente rápido. Sin embargo, el modelo tuneado polinomial tardó varios segundos en dar un resultado y aún así tiene el mismo accuracy que los primeros modelos.
+
+
 
 ## 9 - 
 
