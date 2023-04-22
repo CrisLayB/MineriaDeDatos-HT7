@@ -174,13 +174,25 @@ clean_data <- subset(data, select = columns_used)
 
 ## 2 - Explore los datos y explique las transformaciones que debe hacerle para generar un modelo de máquinas vectoriales de soporte.
 
+### Se llevara a cabo un analisis exploratorio
+
+=> Encontrando todos los NA de la clean data
+
 ```{r}
-modelSvm <- svm(salePrice~., data = train_set, scale = F)
-modelSvm$index
-plot(modelSvm, train_set, salePrice~.)
+sum(is.na(clean_data))
+colSums(is.na(clean_data))
 ```
 
+Se puede observar que se presentan datos vacios en "houseStyle" y en "houseZone". Por si se llevara a cabo un modelo de maquuinas vectoriales necesitaremos tener cuidado con estos datos.
 
+=> Tendencias de la data
+
+``` {r}
+correlations <- cor(clean_data[,c("salePrice", "neighborhood", "houseStyle", "houseZone", "overallQuality", "yearBuilt")], use="pairwise.complete.obs")
+corrplot(correlations, method="circle", type="lower", sig.level = 0.01, insig = "blank")
+```
+
+Se puede observar que el año donde se realizo la casa, su precio y la calidad de esta misma esta correlacionado con el vecindario, estos tres datos tienen una correlacion negativa, esto nos indica que las condiciones actuales puenden reducir a lo largo de los años.
 
 ## 3 - Use como variable respuesta la variable categórica que especifica si la casa es barata, media o cara
 
