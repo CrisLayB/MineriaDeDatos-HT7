@@ -189,7 +189,7 @@ Se puede observar que se presentan datos vacios en "houseStyle" y en "houseZone"
 
 ``` {r}
 correlations <- cor(clean_data[,c("salePrice", "neighborhood", "houseStyle", "houseZone", "overallQuality", "yearBuilt")], use="pairwise.complete.obs")
-corrplot(correlations, method="circle", type="lower", sig.level = 0.01, insig = "blank")
+#corrplot(correlations, method="circle", type="lower", sig.level = 0.01, insig = "blank")
 ```
 
 Se puede observar que el año donde se realizo la casa, su precio y la calidad de esta misma esta correlacionado con el vecindario, estos tres datos tienen una correlacion negativa, esto nos indica que las condiciones actuales puenden reducir a lo largo de los años.
@@ -296,7 +296,33 @@ En cuanto a tiempo, todos los modelos sin tunear fueron procesados relativamente
 
 
 
-## 9 - 
+## 9 - Compare la eficiencia del mejor modelo de SVM con los resultados obtenidos en los algoritmos de las hojas de trabajo anteriores que usen la misma variable respuesta (árbol de decisión y random forest, naive bayes). ¿Cuál es mejor para predecir? ¿Cuál se demoró más en procesar?
+
+```{r}
+suppressWarnings({
+  Rprof(memory.profiling = TRUE)
+  modelTunedP_prof <- tune.svm(economy~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="polynomial", degree = c(2,3))
+  Rprof(NULL)
+  profile_polynomial_model <- summaryRprof(memory = "both")
+})
+```
+
+```{r}
+train_set_prof <- train_set[,-21]
+suppressWarnings({
+  Rprof(memory.profiling = TRUE)
+  decision_tree_model <- rpart(economy~., train_set_prof, method="class")
+  Rprof(NULL)
+  profile_dt_model <- NULL
+  if (file.exists("Rprof.out")) {
+    profile_dt_model <- summaryRprof(memory = "both")
+  } else {
+    cat("No se generaron datos del perfilado de memoria\n")
+  }
+})
+```
+
+
 
 ## 10 - 
 

@@ -1,0 +1,10 @@
+memory profiling: sample.interval=20000
+:3270314:5269855:224898072:614:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270314:5269855:224898072:0:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270314:5269855:224898072:0:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270314:5269855:224898072:0:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270314:5269855:224898072:0:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270314:5269855:224898072:0:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270314:5269855:224898072:0:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270314:5269855:224898072:0:".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
+:3270859:5271156:224948248:2:"grepl" ".rs.extractRCode" ".Call" "rpart" "withCallingHandlers" "suppressWarnings" 
