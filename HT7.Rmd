@@ -17,6 +17,7 @@ library(caret)       # bagging
 library(e1071)
 library(dummy)
 library(fastDummies)
+library(randomForest)
 ```
 
 ## 1 - Use los mismos conjuntos de entrenamiento y prueba de las hojas de trabajo pasadas para probar el algoritmo.
@@ -298,6 +299,7 @@ En cuanto a tiempo, todos los modelos sin tunear fueron procesados relativamente
 
 ## 9 - Compare la eficiencia del mejor modelo de SVM con los resultados obtenidos en los algoritmos de las hojas de trabajo anteriores que usen la misma variable respuesta (árbol de decisión y random forest, naive bayes). ¿Cuál es mejor para predecir? ¿Cuál se demoró más en procesar?
 
+### Profiling de mejor modelo de SVM - Modelo tuneado polinomial
 ```{r}
 suppressWarnings({
   Rprof(memory.profiling = TRUE)
@@ -307,6 +309,7 @@ suppressWarnings({
 })
 ```
 
+### Profiling de árbol de decisión
 ```{r}
 train_set_prof <- train_set[,-21]
 suppressWarnings({
@@ -316,6 +319,38 @@ suppressWarnings({
   profile_dt_model <- NULL
   if (file.exists("Rprof.out")) {
     profile_dt_model <- summaryRprof(memory = "both")
+  } else {
+    cat("No se generaron datos del perfilado de memoria\n")
+  }
+})
+```
+
+### Profiling de random forest
+```{r}
+
+suppressWarnings({
+  Rprof(memory.profiling = TRUE)
+  random_forest_model <- randomForest(economy~.,train_set_prof, na.action = na.omit)
+  Rprof(NULL)
+  profile_rf_model <- NULL
+  if (file.exists("Rprof.out")) {
+    profile_rf_model <- summaryRprof(memory = "both")
+  } else {
+    cat("No se generaron datos del perfilado de memoria\n")
+  }
+})
+
+```
+
+### Profiling de naive bayes 
+```{r}
+suppressWarnings({
+  Rprof(memory.profiling = TRUE)
+  model_naive_bayes <- naiveBayes(salePrice~., data=train_set)
+  Rprof(NULL)
+  profile_nb_model <- NULL
+  if (file.exists("Rprof.out")) {
+    profile_nb_model <- summaryRprof(memory = "both")
   } else {
     cat("No se generaron datos del perfilado de memoria\n")
   }
