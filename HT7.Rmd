@@ -299,6 +299,7 @@ En cuanto a tiempo, todos los modelos sin tunear fueron procesados relativamente
 
 ## 9 - Compare la eficiencia del mejor modelo de SVM con los resultados obtenidos en los algoritmos de las hojas de trabajo anteriores que usen la misma variable respuesta (árbol de decisión y random forest, naive bayes). ¿Cuál es mejor para predecir? ¿Cuál se demoró más en procesar?
 
+
 ### Profiling de mejor modelo de SVM - Modelo tuneado polinomial
 ```{r}
 suppressWarnings({
@@ -346,7 +347,7 @@ suppressWarnings({
 ```{r}
 suppressWarnings({
   Rprof(memory.profiling = TRUE)
-  model_naive_bayes <- naiveBayes(salePrice~., data=train_set)
+  model_naive_bayes <- naiveBayes(economy~., data=train_set)
   Rprof(NULL)
   profile_nb_model <- NULL
   if (file.exists("Rprof.out")) {
@@ -357,6 +358,21 @@ suppressWarnings({
 })
 ```
 
+## Predicciones de modelos
+
+### Prediccion de modelo svm tuneado polinomial
+```{r}
+predictionTunedP <- predict(modelTunedP_prof$best.model, newdata=test_set)
+confusionMatrix(test_set$economy, predictionTunedP)
+```
+# svm polym - 0.9972
+
+### Prediccion de modelo - Naive Bayes
+```{r}
+test_prediction_naive_bayes <- predict(model_naive_bayes, newdata = test_set)
+confusionMatrix(test_prediction_naive_bayes, test_set$economy)
+```
+## naive bayes - 0.698
 
 
 ## 10 - 
