@@ -365,14 +365,9 @@ suppressWarnings({
 predictionTunedP <- predict(modelTunedP_prof$best.model, newdata=test_set)
 confusionMatrix(test_set$economy, predictionTunedP)
 ```
-# svm polym - 0.9972
+Como resultado del mejor modelo de SVM se obtuvo una precisión de 99.72%, ahora bien, como resultados de hojas de trabajo anteriores se obtuvieron los siguientes resultados: arbol de decisión: 80.72%, random forest: 84.9%, naive bayes: 73%. Quien tiene un valor de precisión más alto es el modelo de SVM, sin embargo, hay que tomar en cuenta que puede tener overfit y el modelo no sería generalizable, por tanto random forest puede ser una mejor opción para predecir. Ahora bien, los resultados del tiempo de procesamiento son: `r profile_polynomial_model$sampling.time` para el modelo polinomial, `r profile_dt_model$sampling.time` para el modelo de arboles de decisión, `r profile_rf_model$sampling.time` y `r profile_nb_model$sampling.time`, por tanto se sabe que el modelo que más se demoró en procesar fue: el modelo de SVM.
 
-### Prediccion de modelo - Naive Bayes
-```{r}
-test_prediction_naive_bayes <- predict(model_naive_bayes, newdata = test_set)
-confusionMatrix(test_prediction_naive_bayes, test_set$economy)
-```
-## naive bayes - 0.698
+
 
 
 ## 10 - 
