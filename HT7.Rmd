@@ -368,9 +368,29 @@ confusionMatrix(test_set$economy, predictionTunedP)
 Como resultado del mejor modelo de SVM se obtuvo una precisión de 99.72%, ahora bien, como resultados de hojas de trabajo anteriores se obtuvieron los siguientes resultados: arbol de decisión: 80.72%, random forest: 84.9%, naive bayes: 73%. Quien tiene un valor de precisión más alto es el modelo de SVM, sin embargo, hay que tomar en cuenta que puede tener overfit y el modelo no sería generalizable, por tanto random forest puede ser una mejor opción para predecir. Ahora bien, los resultados del tiempo de procesamiento son: `r profile_polynomial_model$sampling.time` para el modelo polinomial, `r profile_dt_model$sampling.time` para el modelo de arboles de decisión, `r profile_rf_model$sampling.time` y `r profile_nb_model$sampling.time`, por tanto se sabe que el modelo que más se demoró en procesar fue: el modelo de SVM.
 
 
+## 10 - Genere un buen modelo de regresión, use para esto la variable del precio de la casa directamente.
+
+```{r}
+modelSVR_01 <- svm(salePrice~. - houseUtilities, data=train_set, type="eps-regression", kernel="linear", cost=14, epsilon=0.56)
+predictionReg01<-predict(modelSVR_01, newdata=test_set)
+
+mse <- mean((test_set$salePrice - predictionReg01)^2)
+rmse <- sqrt(mse)
+mae <- mean(abs(test_set$salePrice - predictionReg01))
+rsquared <- 1 - (sum((test_set$salePrice - predictionReg01)^2) / sum((test_set$salePrice - mean(test_set$salePrice))^2))
 
 
-## 10 - 
+cat("MSE:", mse, "\n")
+cat("RMSE:", rmse, "\n")
+cat("MAE:", mae, "\n")
+cat("R cuadrado:", rsquared, "\n")
+
+```
+
+
+
+
+
 
 ## 11 - 
 
