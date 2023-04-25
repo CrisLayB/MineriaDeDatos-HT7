@@ -402,9 +402,7 @@ cat("RMSE:", mse_tuned, "\n")
 cat("MAE:", mae_tuned, "\n")
 cat("R cuadrado:", r_cuadrado_svr_tuned, "\n")
 ```
-
-
-
+Al momento de tunear el modelo se obtiene un r cuadrado ligeramente mejor. Lo cual nos permite que el modelo se pueda ajustar mejor a los datos.
 
 ## 11 - 
 
