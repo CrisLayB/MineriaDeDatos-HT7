@@ -440,5 +440,5 @@ Al momento de tunear el modelo se obtiene un r cuadrado ligeramente mejor. Lo cu
 
 
 ## 11 - Compare los resultados del modelo de regresión generado con los de hojas anteriores que utilicen la misma variable, como la de regresión lineal.
-Considerando que el modelo de regresión es multivariable se toma como comparación el modelo de regresión lineal mutivariable de la hoja de trabajo pasada, en donde se obtuvo un r cuadrado de: 0.8231. Con svr se obtuvo un r cuadrado de 0.7485. Esto nos demuestra que el modelo de regresión multivariable de la hoja de trabajo pasada se adapta más al modelo.
+Considerando que el modelo de regresión es multivariable se toma como comparación el modelo de regresión lineal mutivariable de la hoja de trabajo pasada, en donde se obtuvo un r cuadrado de: 0.8231. Con svr tuneado se obtuvo un r cuadrado de `r r_cuadrado_svr_tuned` Esto nos demuestra que el modelo de regresión multivariable de la hoja de trabajo pasada se adapta más al modelo.
 

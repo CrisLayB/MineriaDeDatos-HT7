@@ -728,9 +728,9 @@ suppressWarnings({
     cat(&quot;No se generaron datos del perfilado de memoria\n&quot;)
   }
 })</code></pre>
-<p>El tiempo para el algoritmo polinomial tuneado es de 2 segundos. Este
-algoritmo se equivocó una vez según la matriz de confusión donde predijo
-una casa average como Economic.</p>
+<p>El tiempo para el algoritmo polinomial tuneado es de 2.24 segundos.
+Este algoritmo se equivocó una vez según la matriz de confusión donde
+predijo una casa average como Economic.</p>
 <p>Ahora con el modelo radial</p>
 <pre class="r"><code>train_set_prof &lt;- train_set[,-21]
 suppressWarnings({
@@ -744,7 +744,7 @@ suppressWarnings({
     cat(&quot;No se generaron datos del perfilado de memoria\n&quot;)
   }
 })</code></pre>
-<p>El tiempo de entrenamiento fue de 0.12 segundos. Mucho menor al
+<p>El tiempo de entrenamiento fue de 0.14 segundos. Mucho menor al
 modelo tuneado. Sin embargo sufre de una accuracy muy baja dado que
 predice todas las casas como económicas.</p>
 <p>En conclusión, el modelo tuneado hizo un mejor trabajo generalizando
@@ -853,8 +853,8 @@ forest: 84.9%, naive bayes: 73%. Quien tiene un valor de precisión más
 alto es el modelo de SVM, sin embargo, hay que tomar en cuenta que puede
 tener overfit y el modelo no sería generalizable, por tanto random
 forest puede ser una mejor opción para predecir. Ahora bien, los
-resultados del tiempo de procesamiento son: 2.04 para el modelo
-polinomial, 0.04 para el modelo de arboles de decisión, 0.62 y 0, por
+resultados del tiempo de procesamiento son: 2.1 para el modelo
+polinomial, 0.04 para el modelo de arboles de decisión, 0.7 y 0, por
 tanto se sabe que el modelo que más se demoró en procesar fue: el modelo
 de SVM.</p>
 </div>
@@ -905,10 +905,10 @@ de hojas anteriores que utilicen la misma variable, como la de regresión
 lineal.</h2>
 <p>Considerando que el modelo de regresión es multivariable se toma como
 comparación el modelo de regresión lineal mutivariable de la hoja de
-trabajo pasada, en donde se obtuvo un r cuadrado de: 0.8231. Con svr se
-obtuvo un r cuadrado de 0.7485. Esto nos demuestra que el modelo de
-regresión multivariable de la hoja de trabajo pasada se adapta más al
-modelo.</p>
+trabajo pasada, en donde se obtuvo un r cuadrado de: 0.8231. Con svr
+tuneado se obtuvo un r cuadrado de 0.7374212 Esto nos demuestra que el
+modelo de regresión multivariable de la hoja de trabajo pasada se adapta
+más al modelo.</p>
 </div>
 
 
