@@ -18,6 +18,7 @@ library(e1071)
 library(dummy)
 library(fastDummies)
 library(randomForest)
+library(corrplot)
 ```
 
 ## 1 - Use los mismos conjuntos de entrenamiento y prueba de las hojas de trabajo pasadas para probar el algoritmo.
@@ -190,7 +191,7 @@ Se puede observar que se presentan datos vacios en "houseStyle" y en "houseZone"
 
 ``` {r}
 correlations <- cor(clean_data[,c("salePrice", "neighborhood", "houseStyle", "houseZone", "overallQuality", "yearBuilt")], use="pairwise.complete.obs")
-#corrplot(correlations, method="circle", type="lower", sig.level = 0.01, insig = "blank")
+corrplot(correlations, method="circle", type="lower", sig.level = 0.01, insig = "blank")
 ```
 
 Se puede observar que el año donde se realizo la casa, su precio y la calidad de esta misma esta correlacionado con el vecindario, estos tres datos tienen una correlacion negativa, esto nos indica que las condiciones actuales puenden reducir a lo largo de los años.
