@@ -291,21 +291,44 @@ Todos los modelos adicionales tienen un accuracy de 0.9943, es posible que esté
 
 ## 8 - Compare los resultados obtenidos con los diferentes modelos que hizo en cuanto a efectividad, tiempo de procesamiento y equivocaciones (donde el algoritmo se equivocó más, donde se equivocó menos y la importancia que tienen los errores)
 
+### Profiling de algoritmo polinomial
 ```{r}
+train_set_prof <- train_set[,-21]
 suppressWarnings({
   Rprof(memory.profiling = TRUE)
-  modelTunedP_prof_ej8 <- tune.svm(economy~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="polynomial", degree = c(2,3))
+  modelTunedP <- tune.svm(economy~., data=train_set, cost=c(0.01,0.1,0.5,1,5,10,16,20,32), kernel="polynomial", degree = c(2,3))
   Rprof(NULL)
-  profile_polynomial_model_ej8 <- summaryRprof(memory = "both")
+  profile_pt_model <- NULL
+  if (file.exists("Rprof.out")) {
+    profile_pt_model <- summaryRprof(memory = "both")
+  } else {
+    cat("No se generaron datos del perfilado de memoria\n")
+  }
 })
 ```
 
-En cuanto a tiempo, todos los modelos sin tunear fueron procesados relativamente rápido. Sin embargo, el modelo tuneado polinomial tardó varios segundos en dar un resultado y aún así tiene el mismo accuracy que los primeros modelos.
+El tiempo para el algoritmo polinomial tuneado es de `r profile_pt_model$sampling.time` segundos.
+Este algoritmo se equivocó una vez según la matriz de confusión donde predijo una casa average como Economic.
 
-tiempo:`r profile_nb_model$sampling.time` 
-uso de memoria: `r sum(profile_polynomial_model_ej8$by.total$mem.total)` -> la unidad está en megas.
+Ahora con el modelo radial
+```{r}
+train_set_prof <- train_set[,-21]
+suppressWarnings({
+  Rprof(memory.profiling = TRUE)
+  modelTunedR <- svm(economy~., data=train_set, gamma=2, kernel="radial")
+  Rprof(NULL)
+  profile_r_model <- NULL
+  if (file.exists("Rprof.out")) {
+    profile_r_model <- summaryRprof(memory = "both")
+  } else {
+    cat("No se generaron datos del perfilado de memoria\n")
+  }
+})
+```
 
+El tiempo de entrenamiento fue de `r profile_r_model$sampling.time` segundos. Mucho menor al modelo tuneado. Sin embargo sufre de una accuracy muy baja dado que predice todas las casas como económicas.
 
+En conclusión, el modelo tuneado hizo un mejor trabajo generalizando el set de datos, pero en cuanto a tiempo es más pesado.
 
 ## 9 - Compare la eficiencia del mejor modelo de SVM con los resultados obtenidos en los algoritmos de las hojas de trabajo anteriores que usen la misma variable respuesta (árbol de decisión y random forest, naive bayes). ¿Cuál es mejor para predecir? ¿Cuál se demoró más en procesar?
 
